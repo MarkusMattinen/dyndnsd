@@ -12,18 +12,12 @@ module Dyndnsd
 
       def generate(zone)
         out = []
-        out << "$TTL #{@ttl}"
-        out << "$ORIGIN #{@domain}."
-        out << ""
-        out << "@ IN SOA #{@dns} #{@email_addr} ( #{zone['serial']} 3h 5m 1w 1h )"
-        out << "@ IN NS #{@dns}"
+        out << @additional_zone_content
         out << ""
         zone['hosts'].each do |hostname,ip|
           name = hostname.chomp('.' + @domain)
-          out << "#{name} IN A #{ip}"
+          out << "#{name} #{@ttl} IN A #{ip}"
         end
-        out << ""
-        out << @additional_zone_content
         out << ""
         out.join("\n")
       end
